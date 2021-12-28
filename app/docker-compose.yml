@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+    web:
+        build: ./web
+        environment:
+          - APACHE_RUN_USER=#1000
+        volumes:
+          - ./databases:/var/www/html
+        ports:
+          - '8080:80'
+        working_dir: /var/www/html
+
+    database:
+      image: mysql:5.7
+      container_name: mysql
+      ports:
+        - "3309:3306"
+      volumes:
+        - ./store/mysql-data:/var/lib/mysql
+      env_file:
+        - .env
+
+    composer:
+        image: composer:1.6
+        volumes:
+          - ./databases:/var/www/html
+        working_dir: /var/www/html
+        command: composer install
